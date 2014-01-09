@@ -63,8 +63,15 @@ PhaserCoffeeGenerator.prototype.app = function () {
 
 PhaserCoffeeGenerator.prototype.projectfiles = function () {
   this.copy('_README.md', 'README.md');
+  this.copy('_Gruntfile.coffee', 'Gruntfile.coffee');
   this.copy('app/_index.html', 'app/index.html');
 
-  var mainFilename = this.shallIncludePreloader ? 'main_preloader' : 'main';
-  this.copy('app/coffee/' + mainFilename + '.coffee');
+  if (this.shallIncludePreloader) {
+    this.copy('app/coffee/main_preloader.coffee', 'app/coffee/main.coffee');
+    this.copy('app/coffee/play_scene.coffee', 'app/coffee/play_scene.coffee');
+    this.copy('app/assets/images/preloader_bar.png', 'app/assets/images/preloader_bar.png');
+  }
+  else {
+    this.copy('app/coffee/main.coffee', 'app/coffee/main.coffee');
+  }
 };

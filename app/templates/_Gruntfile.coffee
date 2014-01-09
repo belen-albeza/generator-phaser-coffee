@@ -16,7 +16,10 @@ module.exports = (grunt) ->
     coffee:
       app:
         files:
-          'app/js/<%= _slugify(appName) %>.js' : [
+          'app/js/<%= _.slugify(appName) %>.js' : [
+          <% if (shallIncludePreloader) { %>
+            'app/coffee/play_scene.coffee',
+          <% } %>
             'app/coffee/main.coffee'
           ]
 
