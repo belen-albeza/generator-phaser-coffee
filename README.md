@@ -1,7 +1,6 @@
-# generator-phaser-coffee [![Build Status](https://secure.travis-ci.org/belen-albeza/generator-phaser-coffee.png?branch=master)](https://travis-ci.org/belen-albeza/generator-phaser-coffee)
+# generator-phaser-coffee 
 
-A generator for [Yeoman](http://yeoman.io).
-
+A [Phaser](http://phaser.io) generator for [Yeoman](http://yeoman.io). It will allow create a basic folder structure so you can develop HTML5 games with CoffeeScript and Phaser.
 
 ## Getting Started
 
@@ -43,5 +42,7 @@ If you'd like to get to know Yeoman better and meet some of his friends, [Grunt]
 
 
 ## License
+
+© 2014 Belén Albeza.
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
