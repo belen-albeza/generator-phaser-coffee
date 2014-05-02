@@ -3,8 +3,15 @@
 <head>
   <title><%= appName %></title>
   <meta charset="utf-8">
-  <script src="js/vendor/phaser.js"></script>
-  <script src="js/<%= _.slugify(appName) %>.js"></script>
+
+  <!-- build:js js/libs.js -->
+  <script src="js/bower_components/phaser/phaser.js"></script>
+  <!-- endbuild -->
+
+  <!-- build:js(.tmp) js/<%= _.slugify(appName) %>.js -->
+  <% if (shallIncludePreloader) { %><script src="js/play_scene.js"></script> <% } %>
+  <script src="js/main.js"></script>
+  <!-- endbuild -->
   <style>
     canvas {
       margin: 0 auto;

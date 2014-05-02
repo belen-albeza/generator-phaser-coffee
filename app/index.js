@@ -58,6 +58,7 @@ PhaserCoffeeGenerator.prototype.app = function () {
   this.mkdir('app/coffee');
 
   this.copy('_package.json', 'package.json');
+  this.copy('_bowerrc', '.bowerrc');
   this.copy('_bower.json', 'bower.json');
 };
 

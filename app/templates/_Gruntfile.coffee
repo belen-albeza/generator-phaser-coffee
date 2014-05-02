@@ -1,27 +1,36 @@
+'use strict'
+
+path = require 'path'
+
+mountFolder = (connect, dir) ->
+  connect.static path.resolve dir
+
 module.exports = (grunt) ->
   grunt.loadNpmTasks task for task in [
     'grunt-coffeelint',
     'grunt-contrib-clean',
     'grunt-contrib-coffee',
+    'grunt-contrib-concat',
     'grunt-contrib-connect',
     'grunt-contrib-copy',
-    'grunt-sed',
-    'grunt-contrib-watch'
+    'grunt-contrib-uglify',
+    'grunt-contrib-watch',
+    'grunt-usemin'
   ]
 
   grunt.initConfig
     clean:
-      app: ['build', 'app/js']
+      app: ['dist', '.tmp']
 
     coffee:
       app:
-        files:
-          'app/js/<%= _.slugify(appName) %>.js' : [
-          <% if (shallIncludePreloader) { %>
-            'app/coffee/play_scene.coffee',
-          <% } %>
-            'app/coffee/main.coffee'
-          ]
+        files: [
+          expand: true,
+          cwd: 'app/coffee'
+          src: ['**/*.coffee']
+          dest: '.tmp/js'
+          ext: '.js'
+        ]
 
     coffeelint:
       all: ['Gruntfile.coffee', 'app/coffee/**/*.coffee']
@@ -32,44 +41,40 @@ module.exports = (grunt) ->
           level: 'ignore'
 
     connect:
-      server:
+      dev:
         options:
           port: 9000
           middleware: (connect) ->
-            path = require 'path'
-            [connect.static path.resolve 'app']
+            (mountFolder connect, x) for x in ['app', '.tmp']
+          open: 'http://0.0.0.0:<%%= connect.dev.options.port %>'
 
     copy:
-      app:
+      dist:
         files: [{
           expand: true
           cwd: 'app'
-          src: ['js/**/*.js', '!js/vendor/**/*.js', '**/*.html', 'assets/**/*']
-          dest: 'build'
-        }, {
-          expand: true
-          cwd: 'app'
-          src: ['js/vendor/phaser.min.js']
-          dest: 'build'
+          src: ['**/*.html', 'assets/**/*']
+          dest: 'dist'
         }]
-      bower:
-        files: [
-          {'app/js/vendor/phaser.js': 'bower_components/phaser/phaser.js'},
-          {'app/js/vendor/phaser.min.js':
-            'bower_components/phaser/phaser.min.js'}
-        ]
 
-    sed:
-      minjs:
-        path: 'build/index.html'
-        pattern: /vendor\/(phaser)\.js/g
-        replacement: 'vendor/$1.min.js'
+    useminPrepare:
+      html: 'app/index.html'
+      options:
+        dest: 'dist'
+        flow:
+          steps:
+            js: ['concat', 'uglifyjs']
+          post: {}
+
+    usemin:
+      html: 'dist/index.html'
 
     watch:
       coffeeApp:
         files: ['app/coffee/**/*.coffee']
         tasks: ['coffee:app']
 
-    grunt.registerTask 'build', ['clean', 'coffeelint', 'coffee', 'copy:bower']
-    grunt.registerTask 'release', ['build', 'copy:app', 'sed:minjs']
-    grunt.registerTask 'server', ['build', 'connect:server', 'watch']
+    grunt.registerTask 'build', ['clean', 'coffeelint', 'coffee']
+    grunt.registerTask 'release', ['build', 'useminPrepare', 'concat', 'uglify',
+      'copy:dist', 'usemin']
+    grunt.registerTask 'run', ['build', 'connect:dev', 'watch']
